@@ -10,4 +10,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Appoinment.Domain\Appointment.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

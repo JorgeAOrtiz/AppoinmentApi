@@ -1,6 +1,6 @@
-@AppoinmentApi_HostAddress = http://localhost:5079
+@Appoinment.Api_HostAddress = http://localhost:5079
 
-GET {{AppoinmentApi_HostAddress}}/weatherforecast/
+GET {{Appoinment.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

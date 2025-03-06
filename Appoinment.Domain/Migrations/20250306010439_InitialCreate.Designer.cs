@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Appointment.Domain.Migrations
 {
     [DbContext(typeof(AppointmentDbContext))]
-    [Migration("20250228180511_InitialCreate")]
+    [Migration("20250306010439_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -52,6 +52,24 @@ namespace Appointment.Domain.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Appointments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Date = new DateTime(2025, 3, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Admin Appointment",
+                            State = 0,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Date = new DateTime(2025, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "User Appointment",
+                            State = 0,
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("Appointment.Domain.Models.Role", b =>
@@ -70,6 +88,18 @@ namespace Appointment.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "User"
+                        });
                 });
 
             modelBuilder.Entity("Appointment.Domain.Models.User", b =>
@@ -89,24 +119,57 @@ namespace Appointment.Domain.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@example.com",
+                            Name = "Admin User",
+                            Password = "admin123"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "user@example.com",
+                            Name = "Regular User",
+                            Password = "user123"
+                        });
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("UserRole", b =>
                 {
-                    b.Property<int>("RolesId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("RolesId", "UserId");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "RoleId");
 
-                    b.ToTable("RoleUser");
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRole");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 2
+                        });
                 });
 
             modelBuilder.Entity("Appointment.Domain.Models.Appointment", b =>
@@ -118,11 +181,11 @@ namespace Appointment.Domain.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("UserRole", b =>
                 {
                     b.HasOne("Appointment.Domain.Models.Role", null)
                         .WithMany()
-                        .HasForeignKey("RolesId")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

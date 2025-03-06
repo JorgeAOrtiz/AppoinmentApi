@@ -44,6 +44,11 @@ namespace AppointmentApi.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult<User> AddUser(User user)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _userService.AddUser(user);
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
@@ -55,6 +60,11 @@ namespace AppointmentApi.Controllers
             if (id != user.Id)
             {
                 return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             _userService.UpdateUser(user);
@@ -80,7 +90,7 @@ namespace AppointmentApi.Controllers
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("YourSecretKeyHere");
+            var key = Encoding.ASCII.GetBytes("YourNewSecureSecretKeyThatIs32BytesLong");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

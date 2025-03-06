@@ -40,6 +40,11 @@ namespace AppointmentApi.Controllers
         [Authorize(Roles = "Admin,User")]
         public ActionResult<Appointment.Domain.Models.Appointment> AddAppointment(Appointment.Domain.Models.Appointment appointment)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _appointmentService.AddAppointment(appointment);
             return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, appointment);
         }
@@ -51,6 +56,11 @@ namespace AppointmentApi.Controllers
             if (id != appointment.Id)
             {
                 return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             _appointmentService.UpdateAppointment(appointment);
